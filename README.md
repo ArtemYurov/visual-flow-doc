@@ -61,6 +61,8 @@ The skill also triggers on natural phrasing in Russian — that is where it grew
 
 ## Layout
 
+**Ecosystem-aware.** The method is language-agnostic; what differs is which connections are invisible. Per-ecosystem guides live in `references/tracing/` — PHP/Laravel (verified) and Node/TypeScript (starting point) today, and the general rules cover anything else.
+
 ```
 .claude-plugin/
 ├── plugin.json                 plugin manifest
@@ -69,7 +71,10 @@ skills/visual-flow-doc/
 ├── SKILL.md                    main instructions
 ├── references/
 │   ├── VOCABULARY.md           class and markup vocabulary
-│   ├── TRACING.md              rules for tracing through code
+│   ├── TRACING.md              general tracing method
+│   ├── tracing/
+│   │   ├── php-laravel.md      PHP-specific connections and traps
+│   │   └── node-typescript.md  Node-specific connections and traps
 │   └── EXPORT.md               PDF, markdown, multi-file documents
 └── templates/
     └── skeleton.html           skeleton with the complete CSS

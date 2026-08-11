@@ -23,25 +23,42 @@ The goal is to derive the diagram from what the code actually does, not from wha
 
 ---
 
-## What counts as a connection in PHP/Laravel
+## Establish the ecosystem first
 
-In PHP connections are not visible from `import` statements the way they are in TypeScript. Look for:
+Before looking for a single connection, read the manifest — it tells you which rules apply:
 
-| connection | how to find it |
-|---|---|
-| constructor injection | `__construct(private XService $x)` — the primary source of the graph |
-| method call | `$this->x->method(` |
-| facade | `Cache::`, `Log::`, `DB::`, `Http::` |
-| queue | `dispatch(`, `SomeJob::dispatch(`, `->onQueue(` |
-| event | `event(`, `->dispatch(`, listeners in `EventServiceProvider` |
-| outbound HTTP | Saloon connectors and requests, `Http::get(`, Guzzle |
-| database | Eloquent models, `DB::table(`, repositories |
-| config | `config('x.y')` — often hides the real address of an external service |
-| container | `app(`, `resolve(`, bindings in providers — **a hidden connection, check the providers** |
+| manifest | ecosystem | detail file |
+|---|---|---|
+| `composer.json` | PHP, usually Laravel | [tracing/php-laravel.md](tracing/php-laravel.md) |
+| `package.json` | Node / TypeScript | [tracing/node-typescript.md](tracing/node-typescript.md) |
+| `pyproject.toml`, `requirements.txt` | Python | — use the general rules below |
+| `go.mod` | Go | — use the general rules below |
+| `Gemfile`, `*.csproj`, `pom.xml`, `Cargo.toml` | Ruby / .NET / Java / Rust | — use the general rules below |
 
-Dangerous spot: connections through the container and through class-name strings do not show up in an import graph. If a class looks unconnected, grep for its name across the project.
+Read the matching detail file if one exists. If none does, work from the general rules and say in the report which ecosystem you were working without a guide for.
 
 ---
+
+## What counts as a connection — the general rule
+
+A connection is any place where control or data leaves one module for another. Everywhere, in every language, they fall into five groups:
+
+| group | what it looks like |
+|---|---|
+| **direct call** | an imported symbol is invoked |
+| **injected dependency** | the collaborator arrives through a constructor, a parameter, or a container |
+| **asynchronous handoff** | a queue, an event, a message bus, a scheduler |
+| **network call** | HTTP, RPC, a socket to another service |
+| **storage access** | a database, a cache, a filesystem, an object store |
+
+The first group is visible in an import graph. **The other four often are not** — and that is exactly where a trace goes wrong. For each ecosystem the interesting question is therefore not "what connects" but **what connects invisibly**:
+
+- resolution by string name or by convention (containers, service locators, autowiring, filesystem routing);
+- registration far from use (providers, modules, decorators, annotations, config files);
+- dynamic loading (`importlib`, `import()`, reflection, plugin discovery);
+- monkey-patching and runtime overrides.
+
+When a class or function looks unconnected, grep for its **name as a string** across the whole project before concluding it is dead.
 
 ## What to write on a node
 

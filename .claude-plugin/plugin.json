@@ -1,6 +1,6 @@
 {
   "name": "visual-flow-doc",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Creates and maintains readable HTML documents with block diagrams of algorithms — current (traced from code) and planned (from discussion). Self-contained HTML with no scripts and no external dependencies, light and dark themes, optional PDF and markdown.",
   "author": {
     "name": "Artem Yurov"

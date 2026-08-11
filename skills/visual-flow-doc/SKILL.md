@@ -18,7 +18,7 @@ allowed-tools: Read Write Edit Glob Grep
 license: MIT
 metadata:
   author: artemyurov
-  version: "1.3"
+  version: "1.4"
   category: documentation
 ---
 
@@ -97,6 +97,8 @@ The same subject can be redrawn at another level without starting over.
 
 ## Step 4. Trace — first pass
 
+**First establish the ecosystem** — read the manifest (`composer.json`, `package.json`, `pyproject.toml`, `go.mod`, …) and open the matching guide under [references/tracing/](references/tracing/) if one exists. Which connections the import graph misses depends entirely on the ecosystem, and that is what makes traces wrong.
+
 The first pass follows the trunk: what happens when everything goes well. These rules are mandatory:
 
 1. **Do not invent connections.** Every node and every arrow must follow from real code: a method call, constructor injection, `dispatch`, an HTTP request, a database query, an event. Either verify a suspected connection or mark it explicitly as a hypothesis.
@@ -104,7 +106,7 @@ The first pass follows the trunk: what happens when everything goes well. These 
 3. **On every significant node** — path and line (`app/Services/Baxi/CatalogDiffer.php:88`), what comes in and what goes out.
 4. **Show branching explicitly.** A condition is a decision node; every branch carries a label ("yes" / "no" / "mismatch").
 
-Tracing details for PHP/Laravel — [references/TRACING.md](references/TRACING.md).
+General tracing method — [references/TRACING.md](references/TRACING.md). Per-ecosystem detail — [references/tracing/](references/tracing/): [php-laravel](references/tracing/php-laravel.md), [node-typescript](references/tracing/node-typescript.md).
 
 ---
 
