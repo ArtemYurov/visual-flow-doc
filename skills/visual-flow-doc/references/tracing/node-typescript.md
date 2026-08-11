@@ -46,7 +46,7 @@ An import graph is closer to the dependency graph here than in PHP — but in co
 - **Read the generated map.** `.nuxt/types/nitro-imports.d.ts` (and its equivalents) lists exactly what became global — no guessing needed.
 - **A file can be inconsistently explicit** — importing one helper while relying on auto-import for five others. The presence of imports says nothing about the absence of other connections.
 
-Also invisible:
+Also missed by the graph:
 
 - **filesystem routing** — a route file is an entry point with no importer at all;
 - **barrel files** (`index.ts` re-exporting a directory) — the import points at the barrel, and a symbol can travel through several;
@@ -72,9 +72,9 @@ Facts that only exist there: whether plugins are awaited, in what order files ar
 
 - **Async without await.** A promise created and not awaited is a fire-and-forget branch: the flow continues before the work finishes. Watch for `array.forEach(async …)` — `forEach` never waits for its callbacks, so every `await` inside is decorative.
 - **`try/catch` does not cover callbacks** — nor an async function invoked without `await`. A `try { plugin(app) } catch` around an async plugin catches nothing; the failure lands in `unhandledRejection`.
-- **Order comes from filenames.** With explicit `use()` the order is visible. In convention-driven frameworks it comes from sorting **file names** — renaming a file silently changes the algorithm, and nothing in the code records the dependency.
+- **Order comes from filenames.** With explicit `use()` the order is visible. In convention-driven frameworks it comes from sorting **file names** — renaming a file changes the algorithm, with nothing in the code to record the dependency.
 - **A chain can short-circuit.** Once a handler marks the response as sent, the remaining middleware never runs — so an earlier redirect cancels a later one entirely.
 - **A worker is a separate process.** Drawing enqueue and handler as one line hides that they fail, retry and deploy independently.
 - **Environment branches.** `if (process.env.NODE_ENV === 'production')` around real behaviour is a branch, not noise.
 - **`const X = process.env.X` at module level** freezes the value at import time. When a neighbouring module reads the same variable lazily, the two disagree — and both patterns often live in one repository.
-- **Logger configuration is a property of the flow.** A transport with `level: "error"` silently discards every `info` and `warn`. Check the configured transport levels against the levels actually called: a subsystem can be logging its success messages into nowhere, leaving no positive confirmation that it ever worked.
+- **Logger configuration is a property of the flow.** A transport with `level: "error"` drops every `info` and `warn` without trace. Check the configured transport levels against the levels actually called: a subsystem can be logging its success messages into nowhere, leaving no positive confirmation that it ever worked.
