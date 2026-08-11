@@ -30,7 +30,7 @@ A single HTML file that opens with a double click:
 As a plugin (recommended — updates through `/plugin`):
 
 ```
-/plugin marketplace add <owner>/visual-flow-doc
+/plugin marketplace add ArtemYurov/visual-flow-doc
 /plugin install visual-flow-doc@visual-flow-doc
 ```
 
