@@ -18,7 +18,7 @@ allowed-tools: Read Write Edit Glob Grep
 license: MIT
 metadata:
   author: artemyurov
-  version: "1.7"
+  version: "1.8"
   category: documentation
 ---
 
@@ -175,7 +175,7 @@ Start from [templates/skeleton.html](templates/skeleton.html) — it carries the
 - zero `<script>` tags;
 - zero external URLs in `src`/`href` for resources (links to live sources in prose are fine and welcome);
 - no Mermaid, no CDN;
-- flow layout built from `div` elements, never hand-computed coordinates; `<svg>` only where CSS cannot express the geometry (crossing edges, cycles, complex relations);
+- flow layout built from `div` elements, never hand-computed coordinates; arrows are drawn in CSS — **never put `│` or `▼` in the markup**, glyph metrics differ per system and the line breaks at the joins; `<svg>` only where CSS cannot express the geometry (crossing edges, cycles, complex relations);
 - light and dark themes: `prefers-color-scheme` plus `data-theme="dark"` and `data-theme="light"`;
 - a sticky `nav.toc` from three sections upward;
 - **the first section states the purpose** — what the subject is for, what it deliberately is not, and whose scenarios it serves. A diagram without that hangs in the air;

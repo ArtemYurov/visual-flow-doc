@@ -24,9 +24,9 @@ Inside a node: `<b>` is the title, `<small>` is the gray explanation.
 ```html
 <div class="flow-wrap"><div class="flow">
   <div class="node io"><b>product_catalog.xml</b><small>models, specs, links</small></div>
-  <div class="arr">│<br>▼</div>
+  <div class="arr"></div>
   <div class="node acc-a"><b>Stage A · baxi:boilers</b><small>diff / upsert</small></div>
-  <div class="arr">│ HTTP (Saloon, JWT)<br>▼</div>
+  <div class="arr ext"><span>HTTP (Saloon, JWT)</span></div>
   <div class="node db"><b>Service API</b><small>series → boilers → versions</small></div>
 </div></div>
 ```
@@ -40,7 +40,12 @@ Inside a node: `<b>` is the title, `<small>` is the gray explanation.
 | `flow-wrap` | outer frame of a diagram, provides horizontal scrolling |
 | `flow` | a column of nodes, centered |
 | `branch` | several `flow` columns side by side — parallel paths |
-| `arr` | an arrow between nodes; `<b>` inside is the transition label |
+| `arr` | an arrow between nodes — the line is drawn in CSS, **put no `│` or `▼` in the markup**. A label goes inside an element (`<b>` or `<span>`), never as bare text, so it gets the backing that keeps the line from running through it |
+| `arr dashed` | conditional or optional transition |
+| `arr ext` | the arrow leaves the subsystem — same colour as `node ext` |
+| `arr stop` | the arrow ends in a halt or refusal |
+| `arr tall` | taller gap when a label needs the room |
+| `callout` | an aside in the margin: italic serif, dashed rule. Signals "explanation", not "flow". **Max two per diagram**, and never for something the diagram should label directly |
 | `lane-note` | a small caption under a branch |
 | `grid2` | a card grid that adapts to width on its own |
 | `card` | a card with an `h4` heading |
@@ -51,11 +56,11 @@ A labeled branch:
 ```html
 <div class="branch">
   <div class="flow">
-    <div class="arr"><b>yes</b><br>▼</div>
+    <div class="arr"><b>yes</b></div>
     <div class="node ok"><b>Write the version</b></div>
   </div>
   <div class="flow">
-    <div class="arr"><b>no</b><br>▼</div>
+    <div class="arr"><b>no</b></div>
     <div class="node stop"><b>Into the orphan report</b></div>
   </div>
 </div>
@@ -82,7 +87,7 @@ A labeled branch:
     <small>Order of steps, flags, progress.<br>
     <span class="nope">Does not know:</span> how the XML is shaped, how to call the API.</small>
   </div>
-  <div class="layer-arr">▼</div>
+  <div class="layer-arr"></div>
   <div class="layer l2">…</div>
 </div>
 ```

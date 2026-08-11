@@ -10,6 +10,7 @@ A single HTML file that opens with a double click:
 
 - zero `<script>`, zero external URLs, no Mermaid and no CDN;
 - diagrams assembled from `div` elements — the browser lays them out, no coordinates to compute;
+- arrows drawn in CSS, not typed as `│ ▼`: the line stays straight at any length and the arrowhead renders the same everywhere;
 - light and dark themes;
 - on request — PDF (headless Chrome, with correct page breaks) and a markdown version.
 
