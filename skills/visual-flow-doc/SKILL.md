@@ -18,7 +18,7 @@ allowed-tools: Read Write Edit Glob Grep
 license: MIT
 metadata:
   author: artemyurov
-  version: "1.6"
+  version: "1.7"
   category: documentation
 ---
 
@@ -224,6 +224,16 @@ Go through the draft and apply the drop test to every sentence: **remove it — 
 ### Keep
 
 Causes, consequences and constraints — anything answering **why it is like this** and **what breaks otherwise**. A diagram shows what happens; it cannot show that partial writes are possible because the sink is someone else's API. That sentence stays.
+
+### Do not cut — three cases that look like waste and are not
+
+Learned from a run where the rules above, applied literally, would have destroyed meaning:
+
+- **A list of absent mechanisms is not a list of synonyms.** "No globs, no `*`, no regular expressions, no prefix matching" reads like one idea said four ways. It is four distinct mechanisms, each of which is absent. Drop any one and you have dropped a statement about behaviour.
+- **Parallel items resting on different kinds of argument do not become a table.** When one item is proven by code, the next depends on runtime, and the third cannot be determined from source at all, a table forces them to equal length and erases exactly that difference. Keep the list.
+- **A repetition between the analysis and the reference section is deliberate.** Reference sections are read on their own, out of order, months later. What is redundant while reading front-to-back is load-bearing when someone jumps straight to the table.
+
+The common thread: before cutting, ask what the sentence is doing for a reader who did **not** read the paragraph above it.
 
 ### Shape
 
