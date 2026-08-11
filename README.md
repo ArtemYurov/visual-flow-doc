@@ -21,6 +21,8 @@ A single HTML file that opens with a double click:
 
 **Connections are never invented.** Every node and every arrow follows from a real call, injection, `dispatch`, HTTP request or database query.
 
+**The subject is the algorithm and its branches, not implementation detail.** A box that only converts data stays closed; a box that decides the fate of a record gets opened, because the branches inside it are the document.
+
 **Tracing is two passes.** The first follows the trunk — what happens when everything works. The second is mandatory and hunts what the first structurally misses: early exits, `catch` paths, cache hit/miss, cascades, failures that still exit successfully, dependencies injected but never called, and what a second run actually writes.
 
 **There are no modes.** Whether the file exists is something the skill looks up. Creating, extending, rewriting and splitting off a separate file are one operation.

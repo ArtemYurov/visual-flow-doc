@@ -18,7 +18,7 @@ allowed-tools: Read Write Edit Glob Grep
 license: MIT
 metadata:
   author: artemyurov
-  version: "1.1"
+  version: "1.2"
   category: documentation
 ---
 
@@ -118,13 +118,24 @@ The first pass answers "what happens when everything works". It structurally mis
 |---|---|
 | **Early exits** — `return`, `continue`, `throw` inside the methods you called | they live one level below the call you drew as a single node |
 | **`catch` blocks** — what happens to the data on failure | the happy path never enters them |
-| **Failures that do not fail** — an error logged as `warning` that leaves the exit code successful | it looks like a success from the outside and silently loses data |
+| **How many distinct outcomes share one exit code** — silent data loss, user cancellation, an interrupt signal and real success may all return the same code | from the outside they are indistinguishable, and a caller cannot react to what it cannot tell apart |
 | **Cascades** — one skip that removes a whole branch downstream | visible only when you ask "what depends on this id / this cache entry?" |
 | **Caching** — every cache turns one path into two: hit and miss | the first pass usually draws only the miss |
 | **Flags and config** that change behavior, not just values | they are read far from where they take effect |
 | **Non-boolean states** — a field with three or more meanings (`true` / `false` / absent) | the first pass reads it as a flag |
 | **Injected but never called** — a dependency in the constructor that this flow never uses | it looks like part of the flow because it is in the signature |
 | **Second run** — overwrite, skip, duplicates, no request at all | idempotency cannot be seen by reading a single run |
+
+### Which black boxes to open
+
+**The subject of the document is the algorithm and its branches — not implementation detail.** A node you drew as one box is either a transformation or a decision point, and only the second kind is worth opening.
+
+| the box | leave it closed? |
+|---|---|
+| **transforms** data — mapper, formatter, serializer, parser internals | **yes** — its input and output are the whole story |
+| **decides the fate** of a record — matcher, differ, reconciler, planner, scheduler | **no — open it**: the branches inside are the content of the diagram |
+
+Stop rule: descend while you keep finding decisions, stop at the level where only transformation remains. Never descend for detail's sake — how a string is split is not part of the flow; *which of two keys is used to match a record* is.
 
 Two rules for what you find:
 
@@ -206,7 +217,7 @@ Sections:  overview, layers, stage A, stage B, caching
 - [ ] every cache, flag and early exit that changes the outcome is a branch
 - [ ] at least one reference table: files, config keys, or command flags
 - [ ] a section naming **what is left as a black box** and what the document does not cover
-- [ ] a section longer than one screen is broken into subsections
+- [ ] more than one diagram, or more than one table, in a section → each gets its own `h3` with a meaningful name (subheadings reach the table of contents and are what make the document navigable months later)
 - [ ] whatever could not be traced is said out loud, with the place named
 
 The black-box section is not an apology — it is what keeps the reader from believing the document is more complete than it is.

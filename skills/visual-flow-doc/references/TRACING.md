@@ -79,6 +79,10 @@ The first pass gives you the trunk. The second pass is where a diagram stops bei
 
 **Read fields for arity, not for truth.** A metadata flag that can be `true`, `false` or absent carries three meanings, and the third one ("this stage never touched it") is usually the one that matters operationally.
 
+**Open a box only when it hides a branch.** After the first pass you have a list of nodes drawn as single boxes. For each one ask a single question: does it *decide* anything, or does it only *convert*? A differ choosing between "same", "changed" and "new", a matcher picking which of two keys identifies a record, a planner deciding what gets processed — those hide branches, and the branches are the document. A transformer turning XML into DTOs, a formatter, the string handling inside a parser — those do not, and descending into them buys detail at the cost of the reader.
+
+**Count the outcomes that share an exit code.** Not just errors: a cancelled run, a `--dry-run` with a non-empty plan, an interrupt signal and a clean success may all return the same code. Whoever calls the command cannot distinguish them, and that is worth stating even when it is intentional.
+
 **Run the flow twice in your head.** What does the second run write? If the answer is "nothing, because nothing changed", find the code that makes that true and say so — idempotency is a property readers rely on and rarely see documented.
 
 ---
@@ -117,7 +121,8 @@ And from the second pass:
 
 - [ ] every `catch` and early exit that changes the data's fate is a branch
 - [ ] every cache appears as hit **and** miss, plus the refresh-failure path
-- [ ] any failure that leaves a successful exit code is called out
+- [ ] outcomes sharing one exit code are counted and named (silent loss, cancellation, signal, success)
+- [ ] every box left closed only converts data; every box that decides was opened
 - [ ] cascades are traced: what else disappears when this step is skipped
 - [ ] injected-but-unused dependencies are named as such
 - [ ] the second run is described: overwrite, skip, or no request at all
