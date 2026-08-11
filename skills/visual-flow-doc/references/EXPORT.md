@@ -1,6 +1,6 @@
-# Экспорт
+# Export
 
-Только по явному запросу. По умолчанию выход — один HTML.
+Only on explicit request. By default the output is a single HTML file.
 
 ---
 
@@ -8,16 +8,18 @@
 
 ```bash
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --disable-gpu \
-  --no-pdf-header-footer --print-to-pdf="ИМЯ.pdf" "file://$PWD/ИМЯ.html"
+  --no-pdf-header-footer --print-to-pdf="NAME.pdf" "file://$PWD/NAME.html"
 ```
 
-Работает без установки чего-либо ещё — Chrome уже есть. На Linux вместо пути к приложению подойдёт `google-chrome` или `chromium`.
+Nothing else needs installing — Chrome is already there. On Linux use `google-chrome` or `chromium` instead of the application path.
 
-PDF кладётся рядом с HTML, тем же именем.
+The PDF goes next to the HTML, under the same name.
 
-### Печать ломает схемы — без этого CSS не сдавать
+---
 
-Узлы и таблицы рвутся пополам между страницами. В шаблоне `@media print` уже настроен, при ручной вёрстке проверь, что есть:
+## Printing breaks diagrams — do not ship without this CSS
+
+Nodes and tables get torn in half across pages. The template already sets up `@media print`; when hand-writing markup, make sure it includes:
 
 ```css
 @media print {
@@ -25,8 +27,8 @@ PDF кладётся рядом с HTML, тем же именем.
   .layers, .layer, .tbl-wrap, .card,
   pre, svg, figure  { break-inside: avoid; }
 
-  h2, h3            { break-after: avoid; }   /* заголовок не отрывается от текста */
-  nav.toc           { display: none; }        /* липкое оглавление в печати мусор */
+  h2, h3            { break-after: avoid; }   /* heading stays with its text */
+  nav.toc           { display: none; }        /* a sticky ToC is noise in print */
   a[href^="http"]::after { content: " (" attr(href) ")"; font-size: .85em; }
 }
 
@@ -35,43 +37,45 @@ PDF кладётся рядом с HTML, тем же именем.
 .page-break { break-before: page; }
 ```
 
-`@page` обязателен: без него Chrome ставит свои поля и обрезает широкие схемы.
+`@page` is mandatory: without it Chrome applies its own margins and clips wide diagrams.
 
-`.page-break` — для ручного разрыва там, где он нужен по смыслу (перед крупным разделом, перед приложением).
+`.page-break` is for a manual break where the content calls for one (before a major section, before an appendix).
 
-### Тема при печати
+---
 
-Печать всегда в светлой теме. Если документ открыт в тёмной, headless-рендер всё равно возьмёт светлую — `prefers-color-scheme` в headless по умолчанию light. Проверять отдельно не нужно, но фон должен быть задан явно на `body`, иначе получится прозрачный.
+## Theme when printing
+
+Printing is always in the light theme. Even if the document is open in dark mode, the headless render takes light — `prefers-color-scheme` defaults to light in headless. No separate check is needed, but `body` must set its background explicitly, otherwise the result is transparent.
 
 ---
 
 ## Markdown (`--md`)
 
-Кладётся рядом, тем же именем: `docs/baxi.md`.
+Goes next to the HTML, under the same name: `docs/baxi.md`.
 
-Markdown — **не механический перевод HTML**, а сокращённая версия для чтения в git и в diff:
+Markdown is **not a mechanical conversion** of the HTML but a condensed version for reading in git and in diffs:
 
-- схемы — в блоках ``` с ASCII-стрелками, а не HTML-разметкой;
-- таблицы переносятся как есть;
-- карточки и чипы разворачиваются в обычные списки;
-- ссылки на живые источники сохраняются.
+- diagrams become fenced code blocks with ASCII arrows, not HTML markup;
+- tables carry over as they are;
+- cards and chips unfold into plain lists;
+- links to live sources are preserved.
 
-Смысл в том, чтобы markdown было видно в code review, а HTML — читать глазами.
+The point is that the markdown shows up in code review while the HTML is what you read with your eyes.
 
 ---
 
-## Несколько файлов
+## Multiple files
 
-Когда документ разросся и его делят:
+When a document has outgrown itself and gets split:
 
 ```
 docs/service-api/
-├── index.html       <- оглавление и краткий обзор, ссылки на остальные
+├── index.html       <- table of contents and a short overview, links to the rest
 ├── read.html
 ├── write.html
 └── permissions.html
 ```
 
-`index.html` содержит общую схему (вход → выход целиком) и ссылки с одной строкой описания на каждый файл. Каждый файл — ссылка назад на индекс в шапке.
+`index.html` carries the overall diagram (input → output as a whole) and one-line descriptions linking to each file. Every file links back to the index in its header.
 
-При `--pdf` для набора файлов PDF собирается только для индекса, если не сказано иначе.
+With `--pdf` over a set of files, the PDF is built for the index only, unless stated otherwise.

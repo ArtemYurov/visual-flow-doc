@@ -1,92 +1,92 @@
-# Трассировка по коду
+# Tracing through code
 
-Задача — вывести схему из того, что в коде действительно есть, а не из того, как задумывалось.
-
----
-
-## Порядок работы
-
-1. **Найди точку входа.** Она может быть чем угодно:
-   - консольная команда (`app/Console/Commands/`, `artisan`)
-   - HTTP-роут или контроллер
-   - задание очереди (`app/Jobs/`), слушатель события
-   - ресурс админки (MoonShine, Filament, Nova)
-   - точка расширения пакета — сервис-провайдер, middleware
-
-2. **Прочитай её целиком.** Не по фрагментам: нужен порядок шагов, флаги, ранние выходы.
-
-3. **Иди вглубь по реальным связям** (см. ниже), на каждом шаге фиксируя вход и выход.
-
-4. **Останавливайся на границе внешнего сервиса.**
-
-5. **Собери обратный путь:** что возвращается наверх, что пишется, что логируется.
+The goal is to derive the diagram from what the code actually does, not from what it was meant to do.
 
 ---
 
-## Что считается связью в PHP/Laravel
+## Order of work
 
-В PHP связи не видны из `import`, как в TypeScript. Ищи так:
+1. **Find the entry point.** It can be anything:
+   - a console command (`app/Console/Commands/`, `artisan`)
+   - an HTTP route or controller
+   - a queue job (`app/Jobs/`), an event listener
+   - an admin panel resource (MoonShine, Filament, Nova)
+   - a package extension point — service provider, middleware
 
-| связь | как найти |
+2. **Read it in full.** Not in fragments: you need the order of steps, the flags, the early exits.
+
+3. **Follow real connections downward** (see below), recording input and output at every step.
+
+4. **Stop at external service boundaries.**
+
+5. **Assemble the return path:** what goes back up, what gets written, what gets logged.
+
+---
+
+## What counts as a connection in PHP/Laravel
+
+In PHP connections are not visible from `import` statements the way they are in TypeScript. Look for:
+
+| connection | how to find it |
 |---|---|
-| внедрение через конструктор | `__construct(private XService $x)` — главный источник графа |
-| вызов метода | `$this->x->method(` |
-| фасад | `Cache::`, `Log::`, `DB::`, `Http::` |
-| очередь | `dispatch(`, `SomeJob::dispatch(`, `->onQueue(` |
-| событие | `event(`, `->dispatch(`, слушатели в `EventServiceProvider` |
-| HTTP наружу | Saloon-коннектор и реквесты, `Http::get(`, Guzzle |
-| БД | Eloquent-модели, `DB::table(`, репозитории |
-| конфиг | `config('x.y')` — часто прячет реальный адрес внешнего сервиса |
-| контейнер | `app(`, `resolve(`, биндинги в провайдерах — **скрытая связь, проверяй провайдеры** |
+| constructor injection | `__construct(private XService $x)` — the primary source of the graph |
+| method call | `$this->x->method(` |
+| facade | `Cache::`, `Log::`, `DB::`, `Http::` |
+| queue | `dispatch(`, `SomeJob::dispatch(`, `->onQueue(` |
+| event | `event(`, `->dispatch(`, listeners in `EventServiceProvider` |
+| outbound HTTP | Saloon connectors and requests, `Http::get(`, Guzzle |
+| database | Eloquent models, `DB::table(`, repositories |
+| config | `config('x.y')` — often hides the real address of an external service |
+| container | `app(`, `resolve(`, bindings in providers — **a hidden connection, check the providers** |
 
-Опасное место: связи через контейнер и через строковые имена классов графом импортов не ловятся. Если класс выглядит несвязанным — поищи его имя строкой по всему проекту.
-
----
-
-## Что писать на узле
-
-- **что это** — класс или метод человеческим языком, не дословное имя
-- **где** — `app/Services/Baxi/CatalogDiffer.php:88`
-- **вход** — форма данных: `ParsedProductPage`, `array{sku: string}`, `Collection<Boiler>`
-- **выход** — что отдаёт или какой побочный эффект производит
-- при необходимости — 2–5 строк ключевого кода, не больше
+Dangerous spot: connections through the container and through class-name strings do not show up in an import graph. If a class looks unconnected, grep for its name across the project.
 
 ---
 
-## Ветвления
+## What to write on a node
 
-Каждое `if`, `match`, ранний `return`, `throw`, попадающие в основной сюжет, — это узел решения `node dec` с подписанными ветками.
-
-Не тащи в схему всякую валидацию аргументов. Показывай ветвления, меняющие судьбу данных: пошли по другому источнику, пропустили запись, оборвали цикл, ушли в отчёт об ошибках.
-
----
-
-## Частые ловушки
-
-- **Кеш меняет флоу.** Если есть кеш, у схемы две ветки: попадание и промах. Промах ходит в сеть, попадание — нет.
-- **Флаги команды меняют флоу.** `--force`, `--refresh`, `--dry-run` — либо отдельные ветки, либо честное упоминание в подписи.
-- **Нет транзакции — это факт схемы.** Когда приёмник не своя БД, а чужое HTTP-API, частичная запись возможна; это важнее половины остальных деталей.
-- **Идемпотентность.** Отметь, что происходит при повторном запуске: перезапись, пропуск, дубли.
-- **Устаревшие комментарии и докблоки.** Написанному в докблоке верить нельзя, если код говорит иное.
+- **what it is** — the class or method in plain words, not a verbatim identifier
+- **where** — `app/Services/Baxi/CatalogDiffer.php:88`
+- **input** — the shape of the data: `ParsedProductPage`, `array{sku: string}`, `Collection<Boiler>`
+- **output** — what it returns, or the side effect it produces
+- when useful — 2–5 lines of the key code, no more
 
 ---
 
-## Когда источник — обсуждение, а не код
+## Branching
 
-Проектируемый алгоритм рисуется по разговору и плану, но точка отсчёта всё равно код: что есть сейчас.
+Every `if`, `match`, early `return` or `throw` that belongs to the main storyline is a `node dec` with labeled branches.
 
-Тогда на схеме два слоя — текущее и будущее, различённые классами (`now`/`fut`, `add`/`dead`), с обязательной `legend`. Так документ остаётся полезен и во время работы, и после неё.
-
-Не выдавай проектируемое за существующее. Если чего-то ещё нет — это должно быть видно с первого взгляда.
+Do not drag argument validation into the diagram. Show the branches that change the fate of the data: took a different source, skipped the write, broke out of the loop, went into the error report.
 
 ---
 
-## Проверка перед сдачей
+## Common traps
 
-- [ ] вход и выход названы явно
-- [ ] у каждого значимого узла есть путь и строка
-- [ ] ни одной связи «по смыслу» — все выведены из кода
-- [ ] внешние сервисы терминальны
-- [ ] у каждой ветки решения есть подпись
-- [ ] расхождения с планами и докблоками либо устранены, либо упомянуты
-- [ ] что не удалось проследить — сказано вслух
+- **Caching changes the flow.** If there is a cache, the diagram has two branches: hit and miss. A miss goes to the network, a hit does not.
+- **Command flags change the flow.** `--force`, `--refresh`, `--dry-run` — either separate branches or an honest mention in the caption.
+- **No transaction is a fact of the diagram.** When the sink is not your own database but someone else's HTTP API, partial writes are possible; that matters more than half the remaining detail.
+- **Idempotency.** Note what happens on a second run: overwrite, skip, duplicates.
+- **Stale comments and docblocks.** A docblock cannot be trusted when the code says otherwise.
+
+---
+
+## When the source is discussion, not code
+
+A planned algorithm is drawn from the conversation and the plan, but the starting point is still the code: what exists today.
+
+Then the diagram carries two layers — current and future — distinguished by classes (`now`/`fut`, `add`/`dead`), with a mandatory `legend`. That way the document stays useful both during the work and after it.
+
+Never pass the planned off as the existing. If something is not there yet, it must be obvious at a glance.
+
+---
+
+## Check before handing over
+
+- [ ] input and output are named explicitly
+- [ ] every significant node has a path and a line
+- [ ] no connection "by intuition" — all derived from code
+- [ ] external services are terminal
+- [ ] every decision branch has a label
+- [ ] disagreements with plans and docblocks are either resolved or mentioned
+- [ ] whatever could not be traced is said out loud

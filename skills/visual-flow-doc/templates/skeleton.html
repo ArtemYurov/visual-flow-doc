@@ -1,11 +1,11 @@
 <!doctype html>
-<html lang="ru">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ЗАГОЛОВОК — документация</title>
+<title>TITLE — documentation</title>
 <style>
-/* ══ палитра: светлая по умолчанию ═══════════════════ */
+/* ══ palette: light by default ═══════════════════════ */
 :root {
   --bg: #F6F4F0;
   --panel: #FFFFFF;
@@ -13,9 +13,9 @@
   --ink: #22262E;
   --ink-2: #5A6070;
   --line: #DDD8CE;
-  --a: #B8402C;          /* акцент A — первый этап / опасное */
+  --a: #B8402C;          /* accent A — first stage / dangerous */
   --a-soft: #F6E4DF;
-  --b: #35619B;          /* акцент B — второй этап / внешнее */
+  --b: #35619B;          /* accent B — second stage / external */
   --b-soft: #E3E9F5;
   --ok: #34794B;
   --ok-soft: #E2EEE5;
@@ -27,7 +27,7 @@
 }
 :root[data-theme="dark"] { color-scheme: dark; }
 
-/* системная тёмная — не перебивает явно выбранную светлую */
+/* system dark — never overrides an explicit light choice */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #15171C; --panel: #1D2026; --panel-2: #232730;
@@ -37,7 +37,7 @@
     --mut-soft: #262A33; --code-bg: #262A33; --shadow: none;
   }
 }
-/* явный выбор — выигрывает в обе стороны */
+/* explicit choice — wins in both directions */
 :root[data-theme="dark"] {
   --bg: #15171C; --panel: #1D2026; --panel-2: #232730;
   --ink: #E7E5E0; --ink-2: #9BA0AC; --line: #333842;
@@ -53,7 +53,7 @@
   --mut-soft: #ECEAE4; --code-bg: #EFECE5; --shadow: 0 1px 2px rgba(34,38,46,.06);
 }
 
-/* ══ основа ══════════════════════════════════════════ */
+/* ══ base ════════════════════════════════════════════ */
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
@@ -68,7 +68,7 @@ a { color: var(--b); text-decoration: none; }
 a:hover, a:focus-visible { text-decoration: underline; }
 :focus-visible { outline: 2px solid var(--b); outline-offset: 2px; }
 
-/* ══ шапка и оглавление ══════════════════════════════ */
+/* ══ header and table of contents ════════════════════ */
 header.hero { padding: 44px 0 8px; border-bottom: 1px solid var(--line); }
 .hero h1 { font-size: 30px; font-weight: 600; margin: 0 0 6px; letter-spacing: -.01em; text-wrap: balance; }
 .hero p.sub { color: var(--ink-2); margin: 0 0 14px; max-width: 68ch; }
@@ -83,7 +83,7 @@ nav.toc { position: sticky; top: 0; z-index: 10; background: var(--bg);
 nav.toc a { color: var(--ink-2); font-size: 13px; padding: 9px 0; font-weight: 500; }
 nav.toc a:hover { color: var(--ink); text-decoration: none; }
 
-/* ══ секции и текст ══════════════════════════════════ */
+/* ══ sections and text ═══════════════════════════════ */
 section { margin-top: 52px; }
 h2 { font-size: 21px; font-weight: 600; margin: 0 0 4px; letter-spacing: -.01em; scroll-margin-top: 56px; }
 h2 .stage { font-size: 12px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase;
@@ -97,7 +97,7 @@ ul { max-width: 78ch; padding-left: 22px; margin: 8px 0; }
 li { margin: 3px 0; }
 li::marker { color: var(--ink-2); }
 
-/* ══ таблицы ═════════════════════════════════════════ */
+/* ══ tables ══════════════════════════════════════════ */
 .tbl-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 10px;
             background: var(--panel); box-shadow: var(--shadow); margin: 12px 0; }
 table { border-collapse: collapse; width: 100%; font-size: 13.5px; }
@@ -107,7 +107,7 @@ thead th { border-top: 0; font-size: 11.5px; text-transform: uppercase; letter-s
 td { font-variant-numeric: tabular-nums; }
 td code { white-space: nowrap; }
 
-/* ══ блок-схемы ══════════════════════════════════════ */
+/* ══ block diagrams ══════════════════════════════════ */
 .flow-wrap { overflow-x: auto; margin: 14px 0; padding: 18px; border: 1px solid var(--line);
              border-radius: 10px; background: var(--panel); box-shadow: var(--shadow); }
 .flow { display: flex; flex-direction: column; align-items: center;
@@ -130,7 +130,7 @@ td code { white-space: nowrap; }
 .branch > .flow { flex: none; }
 .lane-note { font-size: 11.5px; color: var(--ink-2); margin-top: 4px; text-align: center; max-width: 46ch; }
 
-/* ══ слои ответственности ════════════════════════════ */
+/* ══ layers of responsibility ════════════════════════ */
 .layers { display: flex; flex-direction: column; gap: 0; width: 100%; max-width: 760px; margin: 0 auto; }
 .layer { border: 1px solid var(--line); background: var(--panel-2); border-radius: 8px;
          padding: 10px 16px; text-align: left; }
@@ -146,7 +146,7 @@ td code { white-space: nowrap; }
 .layer.l4 { border-left: 3px solid var(--b); }
 .layer.cross { border-style: dashed; background: var(--panel); }
 
-/* ══ сейчас / станет ═════════════════════════════════ */
+/* ══ now / will become ═══════════════════════════════ */
 .now, .fut { border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
              padding: 14px 16px; margin: 12px 0; box-shadow: var(--shadow); }
 .fut { border-style: dashed; }
@@ -165,7 +165,7 @@ td code { white-space: nowrap; }
 .legend span { display: inline-flex; align-items: center; gap: 6px; }
 .legend i { width: 12px; height: 12px; border-radius: 3px; border: 1px solid var(--line); display: inline-block; }
 
-/* ══ карточки и чипы ═════════════════════════════════ */
+/* ══ cards and chips ═════════════════════════════════ */
 .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin: 12px 0; }
 .card { border: 1px solid var(--line); border-radius: 10px; background: var(--panel);
         padding: 14px 16px; box-shadow: var(--shadow); }
@@ -187,7 +187,7 @@ svg { max-width: 100%; height: auto; }
 .footnote { color: var(--ink-2); font-size: 12.5px; }
 hr.sep { border: 0; border-top: 1px solid var(--line); margin: 40px 0 0; }
 
-/* ══ печать / PDF ════════════════════════════════════ */
+/* ══ print / PDF ═════════════════════════════════════ */
 @page { margin: 14mm 12mm; }
 @media print {
   .flow-wrap, .flow, .node, .branch, .layers, .layer,
@@ -206,59 +206,59 @@ hr.sep { border: 0; border-top: 1px solid var(--line); margin: 40px 0 0; }
 <main>
 
 <header class="hero">
-  <h1>ЗАГОЛОВОК</h1>
-  <p class="sub">Одна фраза: что за алгоритм, откуда берёт данные, куда кладёт результат.</p>
+  <h1>TITLE</h1>
+  <p class="sub">One sentence: what the algorithm is, where it reads from, where it writes to.</p>
   <div class="cmd-row">
-    <span class="cmd"><span class="dot dot-a"></span><code>команда запуска</code></span>
+    <span class="cmd"><span class="dot dot-a"></span><code>command that runs it</code></span>
   </div>
 </header>
 
 <nav class="toc">
-  <a href="#overview">Обзор</a>
-  <a href="#layers">Слои</a>
-  <a href="#ref">Справочник</a>
+  <a href="#overview">Overview</a>
+  <a href="#layers">Layers</a>
+  <a href="#ref">Reference</a>
 </nav>
 
-<!-- ═══ ОБЗОР: вход → преобразование → выход ═══ -->
+<!-- ═══ OVERVIEW: input → transformation → output ═══ -->
 <section id="overview">
-  <h2>Обзор</h2>
-  <p class="lead">Что на входе, что происходит, что на выходе.</p>
+  <h2>Overview</h2>
+  <p class="lead">What comes in, what happens, what goes out.</p>
 
   <div class="flow-wrap"><div class="flow">
-    <div class="node io"><b>ВХОД</b><small>источник данных</small></div>
+    <div class="node io"><b>INPUT</b><small>data source</small></div>
     <div class="arr">│<br>▼</div>
-    <div class="node"><b>Шаг</b><small>app/Services/X.php:42</small></div>
+    <div class="node"><b>Step</b><small>app/Services/X.php:42</small></div>
     <div class="arr">│<br>▼</div>
-    <div class="node db"><b>ВЫХОД</b><small>приёмник</small></div>
+    <div class="node db"><b>OUTPUT</b><small>sink</small></div>
   </div></div>
 </section>
 
-<!-- ═══ СЛОИ (если масштаб подсистемы и выше) ═══ -->
+<!-- ═══ LAYERS (subsystem scale and above) ═══ -->
 <section id="layers">
-  <h2>Слои ответственности</h2>
-  <p class="lead">Каждый слой знает только слой под собой.</p>
+  <h2>Layers of responsibility</h2>
+  <p class="lead">Each layer knows only the layer beneath it.</p>
 
   <div class="flow-wrap">
     <div class="layers">
       <div class="layer l1">
-        <span class="num">1 · СЦЕНАРИЙ</span><span class="path">путь/</span>
-        <small>Что делает.<br><span class="nope">Не знает:</span> чего не знает.</small>
+        <span class="num">1 · SCENARIO</span><span class="path">path/</span>
+        <small>What it does.<br><span class="nope">Does not know:</span> what it does not know.</small>
       </div>
       <div class="layer-arr">▼</div>
       <div class="layer l2">
-        <span class="num">2 · ДОМЕН</span><span class="path">путь/</span>
-        <small>Что делает.<br><span class="nope">Не знает:</span> чего не знает.</small>
+        <span class="num">2 · DOMAIN</span><span class="path">path/</span>
+        <small>What it does.<br><span class="nope">Does not know:</span> what it does not know.</small>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ═══ СПРАВОЧНИК ═══ -->
+<!-- ═══ REFERENCE ═══ -->
 <section id="ref">
-  <h2>Справочник</h2>
+  <h2>Reference</h2>
   <div class="tbl-wrap">
     <table>
-      <thead><tr><th>Файл</th><th>Роль</th></tr></thead>
+      <thead><tr><th>File</th><th>Role</th></tr></thead>
       <tbody>
         <tr><td><code>app/…</code></td><td>—</td></tr>
       </tbody>

@@ -1,17 +1,19 @@
 ---
 name: visual-flow-doc
 description: >-
-  Создаёт и сопровождает наглядные HTML-документы с блок-схемами алгоритмов —
-  текущих (по коду) и проектируемых (по обсуждению). Автономный HTML без скриптов
-  и внешних зависимостей, светлая и тёмная тема, опционально PDF и markdown.
-  Используй, когда просят: визуализировать поток данных, нарисовать флоу,
-  визуальную схему работы, диаграмму алгоритма, блок-схему, слои ответственности,
-  обзор входных и выходных данных, схему бизнес-процесса; сделать HTML-доку flow;
-  зафиксировать что-то в существующем flow-документе; переоформить документ под
-  актуальное состояние кода; вынести часть документа в отдельный файл с
-  оглавлением. Also triggers on: visual flow, flow diagram, flowchart, algorithm
-  diagram, data flow visualization, architecture doc, process diagram.
-argument-hint: "[что описать или путь к документу] [--pdf] [--md]"
+  Creates and maintains readable HTML documents with block diagrams of algorithms —
+  both current (traced from code) and planned (from discussion). Self-contained HTML
+  with no scripts and no external dependencies, light and dark themes, optional PDF
+  and markdown. Use when asked to: visualize a data flow, draw a flow, make a visual
+  diagram of how something works, an algorithm diagram, a block diagram, layers of
+  responsibility, an overview of inputs and outputs, a business process diagram; make
+  an HTML flow doc; record something in an existing flow document; rewrite a document
+  to match the current state of the code; split part of a document into a separate
+  file with a table of contents. Also triggers on Russian phrasing: визуализировать
+  поток данных, нарисуй флоу, схема работы, диаграмма алгоритма, блок-схема, слои
+  ответственности, входные и выходные данные, HTML-доку flow, зафиксируй в flow
+  документе, переоформи под актуальное состояние.
+argument-hint: "[what to document or path to a document] [--pdf] [--md]"
 allowed-tools: Read Write Edit Glob Grep
 license: MIT
 metadata:
@@ -22,205 +24,206 @@ metadata:
 
 # visual-flow-doc
 
-Наглядный HTML-документ с блок-схемами: как алгоритм работает сейчас и каким он станет.
+A readable HTML document with block diagrams: how the algorithm works now, and what it will become.
 
-Это **не генератор картинок**. Это живой документ, который создают один раз, а потом дополняют, переоформляют и разделяют на файлы по мере того, как меняется понимание и код.
+This is **not an image generator**. It is a living document — created once, then extended, rewritten and split into files as understanding and code change.
 
 ---
 
-## Инвариант
+## The invariant
 
-**Документ обязан явно называть вход и выход.**
+**The document must name its input and its output explicitly.**
 
-Не удаётся назвать — алгоритм не понят, рисовать рано. Сначала разберись в коде, потом рисуй.
+If you cannot name them, the algorithm is not understood yet — it is too early to draw. Read the code first.
 
-Инвариант держится на любом масштабе:
+The invariant holds at every scale:
 
-| масштаб | вход | выход |
+| scale | input | output |
 |---|---|---|
-| система | источники данных | базы, потребители |
-| подсистема | XML / HTTP / файл | запись в API или БД |
-| слои | что приходит снизу | какие решения уходят вниз |
-| метод | аргументы | возврат, побочный эффект |
-| бизнес-процесс | что произошло | что делать |
+| system | data sources | databases, consumers |
+| subsystem | XML / HTTP / file | write to an API or a database |
+| layers | what arrives from below | what decisions go down |
+| method | arguments | return value, side effect |
+| business process | what happened | what to do |
 
 ---
 
-## Шаг 1. Определи, что делаешь
+## Step 1. Decide what you are doing
 
-Файл существует или нет — **посмотри сам**, не спрашивай. Режимов нет: и создание, и дополнение, и переоформление — одна операция «привести документ в соответствие с реальностью».
+Whether the file exists is a **fact — look it up**, do not ask. There are no modes: creating, extending and rewriting are one operation — bring the document in line with reality.
 
 ```
-файла нет            -> создать
-файл есть            -> прочитать целиком, сверить с реальностью, дописать
-                        (структуру и стиль документа сохранить!)
-просят вынести часть -> дописать + разделить на файлы + индекс с оглавлением
-"это есть в доке?"   -> прочитать и ответить, ничего не создавая
+no file              -> create it
+file exists          -> read it in full, check against reality, extend it
+                        (keep its structure and style!)
+asked to split       -> extend + split into files + an index with a table of contents
+"is this documented?" -> read it and answer, create nothing
 ```
 
-При дополнении **никогда не переписывай документ целиком**, если об этом не попросили явно. Правь точечно через Edit: вставь новую секцию, обнови устаревший блок, добавь узел в схему.
+When extending, **never rewrite the whole document** unless explicitly asked. Edit surgically: insert a new section, refresh an outdated block, add a node to a diagram.
 
 ---
 
-## Шаг 2. Определи источник истины
+## Step 2. Decide the source of truth
 
 ```
-в аргументе путь, класс, команда       -> КОД
-"текущий", "как сейчас работает"       -> КОД
-"нужно сделать", "план", "проблема"    -> ОБСУЖДЕНИЕ + план
-указан существующий документ           -> документ + сверка с кодом
-непонятно                              -> задай ОДИН вопрос и жди ответа
+argument names a path, class, command   -> CODE
+"current", "how it works now"           -> CODE
+"needs to be done", "plan", "problem"   -> DISCUSSION + plan
+an existing document is given           -> the document, checked against code
+unclear                                 -> ask ONE question and wait
 ```
 
-**Код всегда важнее документации.** Планы, `RESEARCH.md`, старые доки и комментарии устаревают. При расхождении верен код; расхождение стоит упомянуть в документе.
+**Code always outweighs documentation.** Plans, research notes, old docs and docblocks go stale. When they disagree with the code, the code wins — and the disagreement is worth mentioning in the document.
 
 ---
 
-## Шаг 3. Определи масштаб
+## Step 3. Decide the scale
 
-Если уровень назван в аргументе («слоями», «обзорно», «этот метод») — не спрашивай.
+If the level is named in the argument ("by layers", "high level", "this method") — do not ask.
 
-Иначе оцени предмет сам, **выведи рекомендацию** и предложи выбор через `AskUserQuestion`. Не голый вопрос — рекомендация плюс альтернативы:
-
-```
-СИСТЕМА       все источники -> все приёмники, без деталей реализации
-ПОДСИСТЕМА    команда/эндпоинт -> сервисы -> приёмник        <- чаще всего это
-СЛОИ          кто за что отвечает, что каждый слой не знает
-МЕТОД         вход -> ветвления -> выход, по строкам
-```
-
-Тот же предмет перерисовывается на другом уровне без старта с нуля.
-
----
-
-## Шаг 4. Трассируй
-
-Правила обязательные, нарушать нельзя:
-
-1. **Не выдумывай связи.** Каждый узел и каждая стрелка выводятся из реального кода: вызова метода, внедрения через конструктор, `dispatch`, HTTP-запроса, запроса к БД, события. Предполагаемую связь либо проверь, либо помечай явно как гипотезу.
-2. **Останавливайся на границе внешнего сервиса.** Чужое API, сторонний сайт, внешняя БД — терминальный узел, внутрь не лезь.
-3. **На каждом значимом узле** — путь и строка (`app/Services/Baxi/CatalogDiffer.php:88`), что на входе и что на выходе.
-4. **Ветвления показывай явно.** Условие — узел решения, у каждой ветки подпись («да» / «нет» / «расхождение»).
-
-Подробности трассировки для PHP/Laravel — [references/TRACING.md](references/TRACING.md).
-
----
-
-## Шаг 5. Собери документ
-
-Возьми [templates/skeleton.html](templates/skeleton.html) — там готовые CSS-переменные, темизация, печать и весь словарь классов.
-
-**Жёсткие требования к выходу:**
-
-- ноль тегов `<script>`;
-- ноль внешних URL в `src`/`href` на ресурсы (ссылки на живые источники в тексте — можно и нужно);
-- никакого Mermaid и никаких CDN;
-- раскладка потоком из `div`, координаты руками не считать; `<svg>` — только там, где CSS не тянет геометрию (пересечения, кольца, сложные связи);
-- светлая и тёмная тема: `prefers-color-scheme` плюс `data-theme="dark"` и `data-theme="light"`;
-- при трёх и более секциях — липкое оглавление `nav.toc`.
-
-Словарь классов и примеры разметки — [references/VOCABULARY.md](references/VOCABULARY.md).
-
-### Текущее и проектируемое на одной схеме
-
-Когда рисуешь изменения, показывай оба слоя сразу и объясняй обозначения в `.legend`:
+Otherwise judge the subject yourself, **state a recommendation** and offer the choice through `AskUserQuestion`. Not a bare question — a recommendation with alternatives:
 
 ```
-.now  .fut          сейчас / станет
-.box.add            добавляется
-.box.dead           удаляется
-.box.hot            горячая точка, узкое место
-.call.new           новый вызов
-.call.warn .bad     проблемный
-.step.newp          новый шаг
-.step.danger .exit  опасный шаг / выход
+SYSTEM       all sources -> all sinks, no implementation detail
+SUBSYSTEM    command/endpoint -> services -> sink          <- most often this one
+LAYERS       who is responsible for what, what each layer does not know
+METHOD       input -> branches -> output, line by line
+```
+
+The same subject can be redrawn at another level without starting over.
+
+---
+
+## Step 4. Trace
+
+These rules are mandatory:
+
+1. **Do not invent connections.** Every node and every arrow must follow from real code: a method call, constructor injection, `dispatch`, an HTTP request, a database query, an event. Either verify a suspected connection or mark it explicitly as a hypothesis.
+2. **Stop at external service boundaries.** A third-party API, an external site, someone else's database is a terminal node — do not go inside.
+3. **On every significant node** — path and line (`app/Services/Baxi/CatalogDiffer.php:88`), what comes in and what goes out.
+4. **Show branching explicitly.** A condition is a decision node; every branch carries a label ("yes" / "no" / "mismatch").
+
+Tracing details for PHP/Laravel — [references/TRACING.md](references/TRACING.md).
+
+---
+
+## Step 5. Build the document
+
+Start from [templates/skeleton.html](templates/skeleton.html) — it carries the CSS variables, theming, print rules and the full class vocabulary.
+
+**Hard requirements for the output:**
+
+- zero `<script>` tags;
+- zero external URLs in `src`/`href` for resources (links to live sources in prose are fine and welcome);
+- no Mermaid, no CDN;
+- flow layout built from `div` elements, never hand-computed coordinates; `<svg>` only where CSS cannot express the geometry (crossing edges, cycles, complex relations);
+- light and dark themes: `prefers-color-scheme` plus `data-theme="dark"` and `data-theme="light"`;
+- a sticky `nav.toc` from three sections upward;
+- set the document `lang` attribute to the project's language — the prose follows the language of the project and the conversation, not this file.
+
+Class vocabulary and markup examples — [references/VOCABULARY.md](references/VOCABULARY.md).
+
+### Current and planned on one diagram
+
+When drawing changes, show both layers at once and explain the notation in `.legend`:
+
+```
+.now  .fut          now / will become
+.box.add            being added
+.box.dead           being removed
+.box.hot            hot spot, bottleneck
+.call.new           new call
+.call.warn .bad     questionable / broken
+.step.newp          new step
+.step.danger .exit  dangerous step / exit
 ```
 
 ---
 
-## Шаг 6. Куда положить
+## Step 6. Where it goes
 
-По умолчанию — `docs/` в корне проекта, имя по предмету: `docs/baxi.html`, `docs/payments-sync-flow.html`.
+By default `docs/` at the project root, named after the subject: `docs/baxi.html`, `docs/payments-sync-flow.html`.
 
-Путь, названный пользователем, всегда важнее. Если документ по своей роли план или заметка исследования — ему место рядом с планами (`plans/`, `research/`), а не в `docs/`.
+A path named by the user always wins. If the document is by its role a plan or a research note, it belongs next to plans (`plans/`, `research/`) rather than in `docs/`.
 
-При разделении на несколько файлов — общий каталог плюс `index.html` с оглавлением и ссылками.
-
----
-
-## Шаг 7. Экспорт (по запросу)
-
-`--pdf` и `--md` — только когда попросили. Команды и требования к печати — [references/EXPORT.md](references/EXPORT.md).
-
-Скилл намеренно **не запрашивает предварительного доступа к shell**: рендер PDF запускает браузер, и это действие должно каждый раз подтверждаться пользователем. Markdown пишется обычным Write и подтверждения не требует.
+When splitting into several files — one directory plus `index.html` with a table of contents and links.
 
 ---
 
-## Шаг 8. Отчёт
+## Step 7. Export (on request)
 
-Не открывай файл автоматически (`open` есть не везде — worktree, ssh). Напечатай путь ссылкой:
+`--pdf` and `--md` only when asked. Commands and print requirements — [references/EXPORT.md](references/EXPORT.md).
+
+This skill deliberately **does not pre-approve shell access**: rendering a PDF launches a browser, and that should be confirmed each time. Markdown is written with ordinary Write and needs no confirmation.
+
+---
+
+## Step 8. Report
+
+Do not open the file automatically (`open` does not exist everywhere — worktrees, ssh). Print the path as a link:
 
 ```
-Готово: file:///абсолютный/путь/docs/baxi.html
+Done: file:///absolute/path/docs/baxi.html
 
-Масштаб:   подсистема
-Вход:      product_catalog.xml, service.baxi.ru
-Выход:     сервисное API backend-app
-Разделы:   обзор, слои, этап A, этап B, кеширование
+Scale:     subsystem
+Input:     product_catalog.xml, service.baxi.ru
+Output:    backend-app service API
+Sections:  overview, layers, stage A, stage B, caching
 ```
 
-Если что-то не удалось проследить по коду — скажи об этом прямо и назови место.
+If something could not be traced in the code, say so plainly and name the place.
 
 ---
 
-## Границы: это не графики
+## Boundaries: this is not charting
 
-Блок-схема — не график данных. Если внутри документа нужен **настоящий график** (столбцы, линии, доли, распределение по времени, тепловая карта, KPI-плитка) — для него применяй скилл `dataviz`, он владеет формой, палитрой и валидацией графиков.
+A block diagram is not a data chart. If the document needs a **real chart** (bars, lines, shares, distribution over time, a heatmap, a KPI tile), use the `dataviz` skill for it — it owns chart form, palette and validation.
 
 ```
-поток, ветвления, слои, вход->выход   -> этот скилл
-столбцы, линии, доли, heatmap, KPI    -> dataviz
+flow, branching, layers, input->output   -> this skill
+bars, lines, shares, heatmap, KPI        -> dataviz
 ```
 
-Не подменяй одно другим: схема, нарисованная как график, теряет причинность; график, нарисованный блоками, теряет масштаб величин.
+Do not substitute one for the other: a flow drawn as a chart loses causality; a chart drawn as blocks loses magnitude.
 
-### Палитра проверена
+### The palette is validated
 
-Акцентные цвета шаблона прогнаны валидатором `dataviz` (`scripts/validate_palette.js`).
+The template's accent colors were run through the `dataviz` validator (`scripts/validate_palette.js`).
 
-- Светлая тема — все проверки пройдены: `--a #B8402C`, `--b #35619B`, `--ok #34794B`, `--warn #A9761F`.
-- Тёмная тема — пара `--warn` ↔ `--ok` даёт ΔE 11.8 при норме 15. Известный и осознанный компромисс: развести их, не выходя из приглушённой документной гаммы, не удаётся — зелёный зажат между синим и золотым. Держится на вторичном кодировании: **каждый узел подписан текстом**, решение отличается ещё и ролью в схеме.
+- Light theme — all checks pass: `--a #B8402C`, `--b #35619B`, `--ok #34794B`, `--warn #A9761F`.
+- Dark theme — the `--warn` ↔ `--ok` pair scores ΔE 11.8 against a floor of 15. A known, deliberate trade-off: they cannot be separated further without leaving the muted document palette — the green is squeezed between the blue and the gold. It holds because of secondary encoding: **every node is labeled with text**, and a decision node is also distinguished by its role in the diagram.
 
-Отсюда правило: **цвет узла — подсказка, а не носитель смысла**. Смысл несёт текст внутри узла. Схема, понятная только по цветам, сделана неправильно.
-
----
-
-## Интеграция с AI Factory
-
-Если в проекте есть `.ai-factory/`:
-
-- прочитай `config.yaml` — из него берётся язык (`language.ui`, `language.artifacts`) и пути;
-- прочитай `DESCRIPTION.md`, `ARCHITECTURE.md`, `RESEARCH.md` и активный план как контекст;
-- **но помни: при расхождении с кодом верен код.**
-
-Скилл работает и без AI Factory — тогда язык документа определяется по языку проекта и общения.
+Hence the rule: **a node's color is a hint, not the carrier of meaning.** Meaning lives in the text inside the node. A diagram that can only be read by color is built wrong.
 
 ---
 
-## Artifact Ownership
+## AI Factory integration
 
-- **Владеет:** сам HTML-документ и его спутники при явном запросе (`.pdf`, `.md`), `index.html` при разделении.
-- **Только чтение:** код, `.ai-factory/*`, планы, `README.md`, всё остальное в репозитории.
-- Скилл никогда не правит код и не трогает чужие артефакты.
+If the project has `.ai-factory/`:
+
+- read `config.yaml` — it provides the language (`language.ui`, `language.artifacts`) and the paths;
+- read `DESCRIPTION.md`, `ARCHITECTURE.md`, `RESEARCH.md` and the active plan as context;
+- **but remember: when they disagree with the code, the code wins.**
+
+The skill works without AI Factory too — then the document language follows the project and the conversation.
 
 ---
 
-## Чего не делать
+## Artifact ownership
 
-- Не переписывать существующий документ целиком ради одной правки.
-- Не изобретать новый стиль, если документ уже есть — держись его разметки.
-- Не рисовать то, чего не нашёл в коде, когда источник истины — код.
-- Не подключать Mermaid, CDN, шрифты из сети, `<script>`.
-- Не считать SVG-координаты руками там, где справится поток.
-- Не открывать файл автоматически.
-- Не публиковать через Artifact.
+- **Owns:** the HTML document itself, and on explicit request its companions (`.pdf`, `.md`), plus `index.html` when splitting.
+- **Read-only:** the code, `.ai-factory/*`, plans, `README.md`, everything else in the repository.
+- The skill never edits code and never touches other tools' artifacts.
+
+---
+
+## What not to do
+
+- Do not rewrite an existing document wholesale for one edit.
+- Do not invent a new style when a document already exists — follow its markup.
+- Do not draw what you did not find in the code when code is the source of truth.
+- Do not pull in Mermaid, a CDN, remote fonts or `<script>`.
+- Do not hand-compute SVG coordinates where flow layout would do.
+- Do not open the file automatically.
+- Do not publish through Artifact.

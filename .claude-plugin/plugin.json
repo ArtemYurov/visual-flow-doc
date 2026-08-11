@@ -1,7 +1,7 @@
 {
   "name": "visual-flow-doc",
   "version": "1.0.0",
-  "description": "Создаёт и сопровождает наглядные HTML-документы с блок-схемами алгоритмов — текущих (по коду) и проектируемых (по обсуждению). Автономный HTML без скриптов и внешних зависимостей, светлая и тёмная тема, опционально PDF и markdown.",
+  "description": "Creates and maintains readable HTML documents with block diagrams of algorithms — current (traced from code) and planned (from discussion). Self-contained HTML with no scripts and no external dependencies, light and dark themes, optional PDF and markdown.",
   "author": {
     "name": "Artem Yurov"
   },

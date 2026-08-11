@@ -1,14 +1,14 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-marketplace.json",
   "name": "visual-flow-doc",
-  "description": "Визуализация потока данных блок-схемами в автономном HTML.",
+  "description": "Visualize data flow as block diagrams in self-contained HTML.",
   "owner": {
     "name": "Artem Yurov"
   },
   "plugins": [
     {
       "name": "visual-flow-doc",
-      "description": "Наглядные HTML-документы с блок-схемами алгоритмов: вход, преобразование, выход. Источник истины — код.",
+      "description": "Readable HTML documents with block diagrams of algorithms: input, transformation, output. The code is the source of truth.",
       "source": "./",
       "category": "documentation"
     }

@@ -1,74 +1,80 @@
 # visual-flow-doc
 
-Агентский скилл: наглядные HTML-документы с блок-схемами алгоритмов — текущих (по коду) и проектируемых (по обсуждению).
+An agent skill that produces readable HTML documents with block diagrams of algorithms — both current (traced from code) and planned (from discussion).
 
-Не генератор картинок. Живой документ: его создают один раз, а потом дополняют, переоформляют и разделяют на файлы по мере того, как меняются понимание и код.
+Not an image generator. A living document: created once, then extended, rewritten and split into files as understanding and code change.
 
-## Что на выходе
+## What you get
 
-Один HTML-файл, который открывается двойным кликом:
+A single HTML file that opens with a double click:
 
-- ноль `<script>`, ноль внешних URL, никакого Mermaid и CDN;
-- схемы собраны из `div` — браузер раскладывает сам, координаты не считаются;
-- светлая и тёмная тема;
-- по запросу — PDF (headless Chrome, с корректными разрывами страниц) и markdown-версия.
+- zero `<script>`, zero external URLs, no Mermaid and no CDN;
+- diagrams assembled from `div` elements — the browser lays them out, no coordinates to compute;
+- light and dark themes;
+- on request — PDF (headless Chrome, with correct page breaks) and a markdown version.
 
-## Принципы
+## Principles
 
-**Вход и выход названы явно.** Не удаётся назвать — алгоритм не понят, рисовать рано.
+**Input and output are named explicitly.** If you cannot name them, the algorithm is not understood yet — it is too early to draw.
 
-**Источник истины — код.** Планы, доки и докблоки устаревают; при расхождении верен код.
+**Code is the source of truth.** Plans, docs and docblocks go stale; when they disagree with the code, the code wins.
 
-**Связи не выдумываются.** Каждый узел и каждая стрелка выводятся из реального вызова, внедрения, `dispatch`, HTTP-запроса или запроса к БД.
+**Connections are never invented.** Every node and every arrow follows from a real call, injection, `dispatch`, HTTP request or database query.
 
-**Режимов нет.** Файл есть или нет — скилл видит сам. Создание, дополнение, переоформление и вынос части в отдельный файл — одна операция.
+**There are no modes.** Whether the file exists is something the skill looks up. Creating, extending, rewriting and splitting off a separate file are one operation.
 
-## Установка
+## Install
 
-Как плагин (рекомендуется — обновляется через `/plugin`):
+As a plugin (recommended — updates through `/plugin`):
 
 ```
 /plugin marketplace add <owner>/visual-flow-doc
 /plugin install visual-flow-doc@visual-flow-doc
 ```
 
-Как скилл, глобально:
+As a skill, globally:
 
 ```bash
 ln -s "$PWD/skills/visual-flow-doc" ~/.claude/skills/visual-flow-doc
 ```
 
-Как скилл, в один проект:
+As a skill, in one project:
 
 ```bash
-cp -R skills/visual-flow-doc <проект>/.claude/skills/
+cp -R skills/visual-flow-doc <project>/.claude/skills/
 ```
 
-## Использование
+## Usage
 
 ```
-/visual-flow-doc выведи текущую схему импорта, ориентируйся на код
-/visual-flow-doc зафиксируй в docs/baxi.html новый этап
-/visual-flow-doc вынеси права в отдельный файл, сделай индекс
+/visual-flow-doc show the current import flow, follow the code
+/visual-flow-doc record the new stage in docs/baxi.html
+/visual-flow-doc split permissions into a separate file, add an index
 /visual-flow-doc docs/baxi.html --pdf
 ```
 
-## Состав
+The skill also triggers on natural phrasing in Russian — that is where it grew up.
+
+## Layout
 
 ```
 .claude-plugin/
-├── plugin.json                 манифест плагина
-└── marketplace.json            репозиторий сам себе маркетплейс
+├── plugin.json                 plugin manifest
+└── marketplace.json            the repo is its own marketplace
 skills/visual-flow-doc/
-├── SKILL.md                    основные инструкции
+├── SKILL.md                    main instructions
 ├── references/
-│   ├── VOCABULARY.md           словарь классов и разметки
-│   ├── TRACING.md              правила трассировки по коду
-│   └── EXPORT.md               PDF, markdown, многофайловые документы
+│   ├── VOCABULARY.md           class and markup vocabulary
+│   ├── TRACING.md              rules for tracing through code
+│   └── EXPORT.md               PDF, markdown, multi-file documents
 └── templates/
-    └── skeleton.html           скелет с полным CSS
+    └── skeleton.html           skeleton with the complete CSS
 ```
 
-## Лицензия
+## Palette
+
+The template's accent colors were validated with the `dataviz` skill's `validate_palette.js`. The light theme passes every check. In the dark theme the warn/ok pair sits below the separation floor — a documented trade-off that holds because every node is labeled with text: color is a hint, never the carrier of meaning.
+
+## License
 
 MIT

@@ -1,145 +1,145 @@
-# Словарь разметки
+# Markup vocabulary
 
-Схемы собираются из `div` с классами. Браузер раскладывает их сам — координаты не считаются, при правке ничего не пересчитывается.
+Diagrams are assembled from `div` elements with classes. The browser lays them out — no coordinates are computed, and nothing needs recalculating when you edit.
 
-Весь CSS для этих классов уже лежит в [../templates/skeleton.html](../templates/skeleton.html).
+All CSS for these classes already lives in [../templates/skeleton.html](../templates/skeleton.html).
 
 ---
 
-## Узлы потока
+## Flow nodes
 
-| класс | смысл | вид |
+| class | meaning | appearance |
 |---|---|---|
-| `node` | обычный шаг | рамка, скруглённый прямоугольник |
-| `node io` | **вход или выход** | пунктирная рамка |
-| `node dec` | решение, ветвление | цвет `--warn` |
-| `node ext` | внешний сервис (терминальный) | цвет `--b` |
-| `node db` | хранилище, приёмник | скруглённая «бочка», толстый верх |
-| `node ok` | успешный исход | цвет `--ok` |
-| `node stop` | останов, отказ | цвет `--a` |
-| `node acc-a`, `node acc-b` | принадлежность этапу A или B | цветная полоса слева |
+| `node` | an ordinary step | bordered rounded rectangle |
+| `node io` | **input or output** | dashed border |
+| `node dec` | decision, branching | `--warn` color |
+| `node ext` | external service (terminal) | `--b` color |
+| `node db` | storage, sink | rounded "barrel", thick top |
+| `node ok` | successful outcome | `--ok` color |
+| `node stop` | halt, rejection | `--a` color |
+| `node acc-a`, `node acc-b` | belongs to stage A or B | colored bar on the left |
 
-Внутри узла: `<b>` — заголовок, `<small>` — пояснение серым.
+Inside a node: `<b>` is the title, `<small>` is the gray explanation.
 
 ```html
 <div class="flow-wrap"><div class="flow">
-  <div class="node io"><b>product_catalog.xml</b><small>модели, ТТХ, ссылки</small></div>
+  <div class="node io"><b>product_catalog.xml</b><small>models, specs, links</small></div>
   <div class="arr">│<br>▼</div>
-  <div class="node acc-a"><b>Этап A · baxi:boilers</b><small>diff / upsert</small></div>
+  <div class="node acc-a"><b>Stage A · baxi:boilers</b><small>diff / upsert</small></div>
   <div class="arr">│ HTTP (Saloon, JWT)<br>▼</div>
-  <div class="node db"><b>Сервисное API</b><small>series → boilers → versions</small></div>
+  <div class="node db"><b>Service API</b><small>series → boilers → versions</small></div>
 </div></div>
 ```
 
 ---
 
-## Структура
+## Structure
 
-| класс | назначение |
+| class | purpose |
 |---|---|
-| `flow-wrap` | внешняя рамка схемы, даёт горизонтальную прокрутку |
-| `flow` | колонка узлов, выравнивание по центру |
-| `branch` | несколько `flow` рядом — параллельные ветки |
-| `arr` | стрелка между узлами; `<b>` внутри — подпись перехода |
-| `lane-note` | подпись под веткой мелким шрифтом |
-| `grid2` | сетка карточек, сама подстраивается под ширину |
-| `card` | карточка с заголовком `h4` |
-| `tbl-wrap` | обёртка таблицы с прокруткой |
+| `flow-wrap` | outer frame of a diagram, provides horizontal scrolling |
+| `flow` | a column of nodes, centered |
+| `branch` | several `flow` columns side by side — parallel paths |
+| `arr` | an arrow between nodes; `<b>` inside is the transition label |
+| `lane-note` | a small caption under a branch |
+| `grid2` | a card grid that adapts to width on its own |
+| `card` | a card with an `h4` heading |
+| `tbl-wrap` | a scrollable table wrapper |
 
-Ветвление с подписями:
+A labeled branch:
 
 ```html
 <div class="branch">
   <div class="flow">
-    <div class="arr"><b>да</b><br>▼</div>
-    <div class="node ok"><b>Записать версию</b></div>
+    <div class="arr"><b>yes</b><br>▼</div>
+    <div class="node ok"><b>Write the version</b></div>
   </div>
   <div class="flow">
-    <div class="arr"><b>нет</b><br>▼</div>
-    <div class="node stop"><b>В orphan-отчёт</b></div>
+    <div class="arr"><b>no</b><br>▼</div>
+    <div class="node stop"><b>Into the orphan report</b></div>
   </div>
 </div>
 ```
 
 ---
 
-## Слои ответственности
+## Layers of responsibility
 
-| класс | назначение |
+| class | purpose |
 |---|---|
-| `layers` | колонка слоёв |
-| `layer l1`..`l4` | слой, цветная полоса слева по номеру |
-| `layer cross` | сквозной слой (пунктир) |
-| `layer-arr` | стрелка между слоями |
-| `.num` | номер и название слоя капсом |
-| `.path` | путь к каталогу серым |
-| `.nope` | «не знает про…» — красным |
+| `layers` | a column of layers |
+| `layer l1`..`l4` | a layer, colored bar on the left by number |
+| `layer cross` | a cross-cutting layer (dashed) |
+| `layer-arr` | an arrow between layers |
+| `.num` | layer number and name in caps |
+| `.path` | directory path in gray |
+| `.nope` | "does not know about…" — in red |
 
 ```html
 <div class="layers">
   <div class="layer l1">
-    <span class="num">1 · СЦЕНАРИЙ</span><span class="path">app/Console/Commands/</span>
-    <small>Порядок шагов, флаги, прогресс.<br>
-    <span class="nope">Не знает:</span> как устроен XML, как ходить в API.</small>
+    <span class="num">1 · SCENARIO</span><span class="path">app/Console/Commands/</span>
+    <small>Order of steps, flags, progress.<br>
+    <span class="nope">Does not know:</span> how the XML is shaped, how to call the API.</small>
   </div>
   <div class="layer-arr">▼</div>
   <div class="layer l2">…</div>
 </div>
 ```
 
-Правило слоёв: **каждый слой знает только слой под собой**. Вверх поднимаются данные, вниз идут решения. Обязательно указывай, чего слой **не** знает — это и есть граница ответственности.
+The rule of layers: **each layer knows only the layer beneath it.** Data rises, decisions descend. Always state what a layer does **not** know — that is where responsibility ends.
 
 ---
 
-## Текущее и проектируемое
+## Current and planned
 
-Для документов про изменения — оба состояния на одной схеме плюс `legend` с расшифровкой.
+For documents about change — both states on one diagram, plus a `legend` explaining the notation.
 
-| класс | смысл |
+| class | meaning |
 |---|---|
-| `now` / `fut` | блок «сейчас» / «станет» |
-| `box add` | добавляется |
-| `box dead` | удаляется, отмирает |
-| `box hot` | горячая точка, узкое место |
-| `call new` | новый вызов |
-| `call warn` / `call bad` | сомнительный / сломанный |
-| `step newp` | новый шаг процесса |
-| `step danger` / `step exit` | опасный шаг / выход |
-| `step mut` | приглушённый, второстепенный |
-| `legend` | расшифровка обозначений — **обязательна**, если использован хоть один модификатор |
+| `now` / `fut` | a "now" / "will become" block |
+| `box add` | being added |
+| `box dead` | being removed, dying |
+| `box hot` | hot spot, bottleneck |
+| `call new` | a new call |
+| `call warn` / `call bad` | questionable / broken |
+| `step newp` | a new process step |
+| `step danger` / `step exit` | dangerous step / exit |
+| `step mut` | muted, secondary |
+| `legend` | notation key — **mandatory** if any modifier is used |
 
 ---
 
-## Чипы и акценты
+## Chips and accents
 
-`chip-ok`, `chip-warn`, `chip-mut`, `chip-a`, `chip-b` — маленькие метки-пилюли для статусов в заголовках и таблицах.
+`chip-ok`, `chip-warn`, `chip-mut`, `chip-a`, `chip-b` — small pill labels for statuses in headings and tables.
 
-`h2 > span.stage` со `stage-a` / `stage-b` — метка этапа рядом с заголовком секции.
-
----
-
-## Когда нужен SVG
-
-Поток из `div` не справится, если нужны:
-
-- пересекающиеся связи, стрелки «в обход»;
-- кольцевые зависимости;
-- схема с координатной сеткой (расположение узлов на плате, топология).
-
-Тогда — inline `<svg viewBox>` с `role="img"` и `aria-label`. Обязательно `viewBox` без фиксированных `width`/`height`, чтобы масштабировался. Цвета брать из `currentColor` или CSS-переменных, иначе тёмная тема сломается.
+`h2 > span.stage` with `stage-a` / `stage-b` — a stage marker next to a section heading.
 
 ---
 
-## Секции документа
+## When SVG is needed
 
-Типовой порядок, сложившийся на практике:
+A `div` flow will not do when you need:
 
-1. `header.hero` — заголовок, подзаголовок в одну фразу, `cmd-row` с командами запуска
-2. `nav.toc` — липкое оглавление (от трёх секций)
-3. **Обзор** — общая схема: все входы → преобразование → выход
-4. **Слои ответственности** — если масштаб подсистемы или выше
-5. Секции по этапам, каждая со своей схемой
-6. Справочник — таблицы: файлы, конфиг, флаги команд
-7. **Дальше** — что не сделано, что планируется
+- crossing edges, arrows that route around;
+- cyclic dependencies;
+- a diagram on a coordinate grid (component placement on a board, a topology).
 
-Не тащи все семь в маленький документ. Обзор и хотя бы одна схема — минимум.
+Then use inline `<svg viewBox>` with `role="img"` and `aria-label`. Always a `viewBox` and no fixed `width`/`height`, so it scales. Take colors from `currentColor` or CSS variables, otherwise dark mode breaks.
+
+---
+
+## Document sections
+
+The order that emerged in practice:
+
+1. `header.hero` — title, a one-sentence subtitle, `cmd-row` with the commands that run it
+2. `nav.toc` — sticky table of contents (from three sections up)
+3. **Overview** — the whole picture: all inputs → transformation → output
+4. **Layers of responsibility** — for subsystem scale and above
+5. One section per stage, each with its own diagram
+6. Reference — tables: files, config, command flags
+7. **Next** — what is missing, what is planned
+
+Do not force all seven into a small document. An overview and at least one diagram is the minimum.
