@@ -18,7 +18,7 @@ allowed-tools: Read Write Edit Glob Grep
 license: MIT
 metadata:
   author: artemyurov
-  version: "1.0"
+  version: "1.1"
   category: documentation
 ---
 
@@ -95,9 +95,9 @@ The same subject can be redrawn at another level without starting over.
 
 ---
 
-## Step 4. Trace
+## Step 4. Trace — first pass
 
-These rules are mandatory:
+The first pass follows the trunk: what happens when everything goes well. These rules are mandatory:
 
 1. **Do not invent connections.** Every node and every arrow must follow from real code: a method call, constructor injection, `dispatch`, an HTTP request, a database query, an event. Either verify a suspected connection or mark it explicitly as a hypothesis.
 2. **Stop at external service boundaries.** A third-party API, an external site, someone else's database is a terminal node — do not go inside.
@@ -108,7 +108,34 @@ Tracing details for PHP/Laravel — [references/TRACING.md](references/TRACING.m
 
 ---
 
-## Step 5. Build the document
+## Step 5. Second pass — sweep for depth
+
+**Mandatory. Do not skip it, and do not merge it into the first pass.**
+
+The first pass answers "what happens when everything works". It structurally misses everything else. Go back into the code you already read and hunt specifically for the following. Each item is a question with a yes/no answer — if the answer is yes, the diagram or the prose is missing something.
+
+| what to hunt | why the first pass misses it |
+|---|---|
+| **Early exits** — `return`, `continue`, `throw` inside the methods you called | they live one level below the call you drew as a single node |
+| **`catch` blocks** — what happens to the data on failure | the happy path never enters them |
+| **Failures that do not fail** — an error logged as `warning` that leaves the exit code successful | it looks like a success from the outside and silently loses data |
+| **Cascades** — one skip that removes a whole branch downstream | visible only when you ask "what depends on this id / this cache entry?" |
+| **Caching** — every cache turns one path into two: hit and miss | the first pass usually draws only the miss |
+| **Flags and config** that change behavior, not just values | they are read far from where they take effect |
+| **Non-boolean states** — a field with three or more meanings (`true` / `false` / absent) | the first pass reads it as a flag |
+| **Injected but never called** — a dependency in the constructor that this flow never uses | it looks like part of the flow because it is in the signature |
+| **Second run** — overwrite, skip, duplicates, no request at all | idempotency cannot be seen by reading a single run |
+
+Two rules for what you find:
+
+1. **A missed branch is a defect of the diagram, not a detail.** Add the node, do not add a sentence.
+2. **What you deliberately left as a black box must be named** — see the completeness checklist in Step 9.
+
+If the second pass finds nothing at all, that is a signal you did not actually run it — a subsystem of any size always has at least a cache branch or an error path.
+
+---
+
+## Step 6. Build the document
 
 Start from [templates/skeleton.html](templates/skeleton.html) — it carries the CSS variables, theming, print rules and the full class vocabulary.
 
@@ -141,7 +168,7 @@ When drawing changes, show both layers at once and explain the notation in `.leg
 
 ---
 
-## Step 6. Where it goes
+## Step 7. Where it goes
 
 By default `docs/` at the project root, named after the subject: `docs/baxi.html`, `docs/payments-sync-flow.html`.
 
@@ -151,7 +178,7 @@ When splitting into several files — one directory plus `index.html` with a tab
 
 ---
 
-## Step 7. Export (on request)
+## Step 8. Export (on request)
 
 `--pdf` and `--md` only when asked. Commands and print requirements — [references/EXPORT.md](references/EXPORT.md).
 
@@ -159,7 +186,7 @@ This skill deliberately **does not pre-approve shell access**: rendering a PDF l
 
 ---
 
-## Step 8. Report
+## Step 9. Report
 
 Do not open the file automatically (`open` does not exist everywhere — worktrees, ssh). Print the path as a link:
 
@@ -172,7 +199,17 @@ Output:    backend-app service API
 Sections:  overview, layers, stage A, stage B, caching
 ```
 
-If something could not be traced in the code, say so plainly and name the place.
+### Completeness checklist — run it before reporting
+
+- [ ] input and output are named explicitly, at the chosen scale
+- [ ] the second pass actually ran, and what it found is **in the diagram**, not only in prose
+- [ ] every cache, flag and early exit that changes the outcome is a branch
+- [ ] at least one reference table: files, config keys, or command flags
+- [ ] a section naming **what is left as a black box** and what the document does not cover
+- [ ] a section longer than one screen is broken into subsections
+- [ ] whatever could not be traced is said out loud, with the place named
+
+The black-box section is not an apology — it is what keeps the reader from believing the document is more complete than it is.
 
 ---
 

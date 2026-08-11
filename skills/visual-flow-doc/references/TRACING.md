@@ -61,6 +61,28 @@ Do not drag argument validation into the diagram. Show the branches that change 
 
 ---
 
+## The second pass in practice
+
+The first pass gives you the trunk. The second pass is where a diagram stops being a summary of the docblocks and starts being a map of the code. Concretely, re-read what you already read, but with these questions.
+
+**Go one level down into every node you drew as a single box.** A call you rendered as "applies the diff" may contain three early exits and a `match`. Those exits are branches of the flow, not implementation detail.
+
+**Read every `catch` and every `Log::warning`.** The interesting question is not "is the error handled" but "what happens to the data". Three outcomes worth drawing separately: the item is dropped, the item is retried, the item is recorded as failed and the run continues.
+
+**Look for failures that do not fail.** An operation that logs a warning, returns early and never reaches the failure list produces a successful exit code with incomplete data. That gap between "something was lost" and "exit code 0" belongs in the document — it is exactly what a reader needs to know and exactly what no docblock says.
+
+**Ask what depends on what was skipped.** If a skipped parent means its children are silently skipped too, that is a cascade. Find it by asking, for each early exit: what did this exit fail to put into the cache / the id map / the queue, and who reads that later?
+
+**Every cache is two paths.** Hit and miss. And a third question: what happens when the refresh fails — stale data, or a hard stop? The answer usually depends on a flag.
+
+**Check the constructor against the body.** A dependency injected but never called in this flow is worth a sentence: it looks like part of the pipeline and is not. It is either a leftover or a deliberate placeholder — the code will tell you which.
+
+**Read fields for arity, not for truth.** A metadata flag that can be `true`, `false` or absent carries three meanings, and the third one ("this stage never touched it") is usually the one that matters operationally.
+
+**Run the flow twice in your head.** What does the second run write? If the answer is "nothing, because nothing changed", find the code that makes that true and say so — idempotency is a property readers rely on and rarely see documented.
+
+---
+
 ## Common traps
 
 - **Caching changes the flow.** If there is a cache, the diagram has two branches: hit and miss. A miss goes to the network, a hit does not.
@@ -90,3 +112,12 @@ Never pass the planned off as the existing. If something is not there yet, it mu
 - [ ] every decision branch has a label
 - [ ] disagreements with plans and docblocks are either resolved or mentioned
 - [ ] whatever could not be traced is said out loud
+
+And from the second pass:
+
+- [ ] every `catch` and early exit that changes the data's fate is a branch
+- [ ] every cache appears as hit **and** miss, plus the refresh-failure path
+- [ ] any failure that leaves a successful exit code is called out
+- [ ] cascades are traced: what else disappears when this step is skipped
+- [ ] injected-but-unused dependencies are named as such
+- [ ] the second run is described: overwrite, skip, or no request at all
