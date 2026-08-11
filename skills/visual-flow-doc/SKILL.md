@@ -18,7 +18,7 @@ allowed-tools: Read Write Edit Glob Grep
 license: MIT
 metadata:
   author: artemyurov
-  version: "1.5"
+  version: "1.6"
   category: documentation
 ---
 
@@ -200,6 +200,42 @@ When drawing changes, show both layers at once and explain the notation in `.leg
 
 ---
 
+## Step 6b. Distil — cut without losing a fact
+
+**Mandatory. Run it on the finished draft, before reporting.**
+
+A diagram document earns its keep by density. Every sentence must carry a fact that is **not already in a diagram, a table or a code reference**. Prose that restates the picture is worse than no prose: it costs reading time and teaches the reader to skim past the parts that do matter.
+
+Go through the draft and apply the drop test to every sentence: **remove it — is any fact lost?** If nothing is lost, it stays removed.
+
+### Cut on sight
+
+| cut | replace with |
+|---|---|
+| meta-text — "this section describes…", "as the diagram shows…", "it is worth noting that…" | the fact itself |
+| a description of a property | the property: not "the cache speeds things up" but "TTL 86400 s; on a miss it goes to the network" |
+| adjectives where a number exists | the number: not "a large file" but "916 lines" |
+| hedging — "generally", "in some cases", "may sometimes" | either the condition that makes it true, or an explicit "not verified" |
+| a caption retelling the nodes above it | nothing, or the one thing the diagram cannot show — why it is built that way |
+| a recap section at the end | nothing; the reader has just read it |
+| three synonyms for one idea | the sharpest one |
+| a paragraph longer than four lines with parallel items | a table or a list |
+
+### Keep
+
+Causes, consequences and constraints — anything answering **why it is like this** and **what breaks otherwise**. A diagram shows what happens; it cannot show that partial writes are possible because the sink is someone else's API. That sentence stays.
+
+### Shape
+
+- one thought per sentence;
+- lists ranked, not enumerated — if a list passes five items, split it into "matters now" and "the rest";
+- a table whenever three or more items share a structure;
+- no preamble before a section and no summary after it.
+
+The target is not a shorter document. It is the same facts in fewer words — and a reader who can trust that every line was worth printing.
+
+---
+
 ## Step 7. Where it goes
 
 By default `docs/` at the project root, named after the subject: `docs/baxi.html`, `docs/payments-sync-flow.html`.
@@ -243,6 +279,7 @@ Sections:  overview, layers, stage A, stage B, caching
 - [ ] a section naming **what is left as a black box** and what the document does not cover
 - [ ] more than one diagram, or more than one table, in a section → each gets its own `h3` with a meaningful name (subheadings reach the table of contents and are what make the document navigable months later)
 - [ ] whatever could not be traced is said out loud, with the place named
+- [ ] the distillation pass ran: no sentence survives that restates a diagram, and no adjective survives where a number was available
 
 The black-box section is not an apology — it is what keeps the reader from believing the document is more complete than it is.
 

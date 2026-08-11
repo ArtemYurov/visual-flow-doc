@@ -25,6 +25,8 @@ A single HTML file that opens with a double click:
 
 **Three sweeps, not one.** The first follows the trunk. The second hunts what it structurally misses — early exits, `catch` paths, cache hit/miss, cascades, outcomes sharing an exit code. The third looks at the whole codebase rather than any single flow: what the thing is *not* for, how destructive each entry point is, what is declared but never used, what is implemented three times, and where intent and implementation disagree.
 
+**Density over completeness.** A finished draft goes through a distillation pass: every sentence must carry a fact that is not already in a diagram or a table. Meta-text, hedging, adjectives where a number exists, and captions retelling the picture are cut. What stays is causes, consequences and constraints — the things a diagram cannot show.
+
 **There are no modes.** Whether the file exists is something the skill looks up. Creating, extending, rewriting and splitting off a separate file are one operation.
 
 ## Install
