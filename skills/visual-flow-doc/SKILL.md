@@ -18,7 +18,7 @@ allowed-tools: Read Write Edit Glob Grep
 license: MIT
 metadata:
   author: artemyurov
-  version: "1.2"
+  version: "1.3"
   category: documentation
 ---
 
@@ -146,6 +146,24 @@ If the second pass finds nothing at all, that is a signal you did not actually r
 
 ---
 
+## Step 5b. Third sweep — properties of the whole
+
+The two passes above walk *a* flow. Some of the most useful facts about a codebase are not on any flow — they are visible only when you look at the whole of it. Collect these before writing:
+
+| what to establish | how to get it |
+|---|---|
+| **The purpose, and what this is *not*** | the README, the package description, the commands' own descriptions. State the job in one sentence, then name two or three neighbouring jobs it deliberately does **not** do — the negations rule out false expectations faster than any description |
+| **Whose scenarios these are** | quote them from the user's side: *"I want my local copy to match production"*. A diagram answers *how*; a scenario answers *why anyone runs it* |
+| **Destructiveness** | for anything that writes: what is irreversibly lost if it goes wrong. Rank the entry points by it and say what exactly does the damage (`DROP SCHEMA … CASCADE`) |
+| **Declared but unused** | grep every DTO, enum, exception and interface for uses outside its own file. "Imported but never applied", "zero throws" are facts about the design, not trivia |
+| **The same thing three times** | one behaviour implemented separately in several places — confirmation prompts, argument parsing, adapter resolution. Name the copies and the drift between them |
+| **How dependencies are assembled** | container bindings or bare `new`? State the consequence: what can and cannot be substituted in tests |
+| **Intent versus implementation** | a docblock, README or config promising something the code does not do. "The mechanism exists but is effectively a stub" is a finding |
+
+Not all seven apply to every subject — but each is worth one question. Findings go into the document as prose and tables, not as diagram nodes: they describe the system, not its flow.
+
+---
+
 ## Step 6. Build the document
 
 Start from [templates/skeleton.html](templates/skeleton.html) — it carries the CSS variables, theming, print rules and the full class vocabulary.
@@ -158,6 +176,7 @@ Start from [templates/skeleton.html](templates/skeleton.html) — it carries the
 - flow layout built from `div` elements, never hand-computed coordinates; `<svg>` only where CSS cannot express the geometry (crossing edges, cycles, complex relations);
 - light and dark themes: `prefers-color-scheme` plus `data-theme="dark"` and `data-theme="light"`;
 - a sticky `nav.toc` from three sections upward;
+- **the first section states the purpose** — what the subject is for, what it deliberately is not, and whose scenarios it serves. A diagram without that hangs in the air;
 - set the document `lang` attribute to the project's language — the prose follows the language of the project and the conversation, not this file.
 
 Class vocabulary and markup examples — [references/VOCABULARY.md](references/VOCABULARY.md).
@@ -216,6 +235,9 @@ Sections:  overview, layers, stage A, stage B, caching
 - [ ] the second pass actually ran, and what it found is **in the diagram**, not only in prose
 - [ ] every cache, flag and early exit that changes the outcome is a branch
 - [ ] at least one reference table: files, config keys, or command flags
+- [ ] the purpose is stated, including what the subject is *not*
+- [ ] anything that writes carries a destructiveness note — what is irreversibly lost
+- [ ] declared-but-unused types were checked systematically, not incidentally
 - [ ] a section naming **what is left as a black box** and what the document does not cover
 - [ ] more than one diagram, or more than one table, in a section → each gets its own `h3` with a meaningful name (subheadings reach the table of contents and are what make the document navigable months later)
 - [ ] whatever could not be traced is said out loud, with the place named

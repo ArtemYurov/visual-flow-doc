@@ -23,7 +23,7 @@ A single HTML file that opens with a double click:
 
 **The subject is the algorithm and its branches, not implementation detail.** A box that only converts data stays closed; a box that decides the fate of a record gets opened, because the branches inside it are the document.
 
-**Tracing is two passes.** The first follows the trunk — what happens when everything works. The second is mandatory and hunts what the first structurally misses: early exits, `catch` paths, cache hit/miss, cascades, failures that still exit successfully, dependencies injected but never called, and what a second run actually writes.
+**Three sweeps, not one.** The first follows the trunk. The second hunts what it structurally misses — early exits, `catch` paths, cache hit/miss, cascades, outcomes sharing an exit code. The third looks at the whole codebase rather than any single flow: what the thing is *not* for, how destructive each entry point is, what is declared but never used, what is implemented three times, and where intent and implementation disagree.
 
 **There are no modes.** Whether the file exists is something the skill looks up. Creating, extending, rewriting and splitting off a separate file are one operation.
 

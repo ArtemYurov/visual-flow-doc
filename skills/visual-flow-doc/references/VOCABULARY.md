@@ -136,10 +136,12 @@ The order that emerged in practice:
 
 1. `header.hero` — title, a one-sentence subtitle, `cmd-row` with the commands that run it
 2. `nav.toc` — sticky table of contents (from three sections up)
-3. **Overview** — the whole picture: all inputs → transformation → output
-4. **Layers of responsibility** — for subsystem scale and above
-5. One section per stage, each with its own diagram
-6. Reference — tables: files, config, command flags
-7. **Next** — what is missing, what is planned
+3. **Purpose** — what this is for, what it deliberately is **not**, whose scenarios it serves, and — for anything that writes — a destructiveness column ranking the entry points by what they can irreversibly destroy
+4. **Overview** — the whole picture: all inputs → transformation → output
+5. **Layers of responsibility** — for subsystem scale and above
+6. One section per stage, each with its own diagram
+7. **Properties of the whole** — declared but unused, duplicated behaviour, how dependencies are assembled, intent versus implementation
+8. Reference — tables: files, config, command flags
+9. **Next** — what is missing, what is planned
 
-Do not force all seven into a small document. An overview and at least one diagram is the minimum.
+Do not force all nine into a small document. Purpose, an overview and at least one diagram is the minimum — the purpose section is never the one to drop.
