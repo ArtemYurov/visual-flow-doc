@@ -115,9 +115,26 @@ For documents about change — both states on one diagram, plus a `legend` expla
 
 ---
 
+## Header and asides
+
+Used in every document, so worth stating the rules rather than copying by example.
+
+| class | purpose |
+|---|---|
+| `hero` | the header block: `h1`, a one-sentence `p.sub`, then `cmd-row` |
+| `cmd-row` | the row of commands that actually run this thing |
+| `cmd` | one command plate; put the command in `<code>` inside it |
+| `cmd > .dot` + `dot-a` / `dot-b` | a coloured dot on the plate. **The colour must match the stage the command belongs to** — a `dot-a` plate next to a `stage-a` section, otherwise the colour is decoration and teaches the reader nothing |
+| `footnote` | a small grey aside under a diagram or table — for the caveat that would break the flow of the paragraph above |
+| `page-break` | manual page break for PDF output, see [EXPORT.md](EXPORT.md) |
+
+`footnote` and `callout` are not interchangeable: a footnote qualifies what was just said, a callout points at one element of a diagram. If the text applies to the whole section, it is neither — it is a sentence in the body.
+
+---
+
 ## Chips and accents
 
-`chip-ok`, `chip-warn`, `chip-mut`, `chip-a`, `chip-b` — small pill labels for statuses in headings and tables.
+`chip` with one of `chip-ok`, `chip-warn`, `chip-mut`, `chip-a`, `chip-b` — small pill labels for statuses in headings and tables.
 
 `h2 > span.stage` with `stage-a` / `stage-b` — a stage marker next to a section heading.
 

@@ -18,7 +18,7 @@ allowed-tools: Read Write Edit Glob Grep
 license: MIT
 metadata:
   author: artemyurov
-  version: "1.8"
+  version: "1.9"
   category: documentation
 ---
 
